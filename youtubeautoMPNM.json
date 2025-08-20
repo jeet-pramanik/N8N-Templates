@@ -1,0 +1,293 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "b2f0aaca-6d55-4869-a1a7-6b428ccf45b4",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "15qXxV88UzMlov66s58vF5Nn_3DH06ZeFGgILY4y9dfI",
+          "mode": "list",
+          "cachedResultName": "youtubeAuto",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15qXxV88UzMlov66s58vF5Nn_3DH06ZeFGgILY4y9dfI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15qXxV88UzMlov66s58vF5Nn_3DH06ZeFGgILY4y9dfI/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        304,
+        0
+      ],
+      "id": "004e138e-b40d-48e9-89d1-1ed9d6b6d95d",
+      "name": "Get row(s) in sheet",
+      "retryOnFail": false,
+      "alwaysOutputData": true,
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "sDzOioH0aTq7boEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "15qXxV88UzMlov66s58vF5Nn_3DH06ZeFGgILY4y9dfI",
+          "mode": "list",
+          "cachedResultName": "youtubeAuto",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15qXxV88UzMlov66s58vF5Nn_3DH06ZeFGgILY4y9dfI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15qXxV88UzMlov66s58vF5Nn_3DH06ZeFGgILY4y9dfI/edit#gid=0"
+        },
+        "clear": "specificRows",
+        "startIndex": "={{ $('Get row(s) in sheet').item.json.row_number }}"
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1568,
+        32
+      ],
+      "id": "4d7a619e-994e-4da4-b6f2-fdc96b2c7b6e",
+      "name": "clear row",
+      "alwaysOutputData": true,
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "sDzOioH0aTq7boEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        928,
+        0
+      ],
+      "id": "ce9ad763-ad06-4bf4-97bd-9b9fdfc150d4",
+      "name": "Download file",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "4nsJPXXkh7iK9UO3",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "upload",
+        "title": "={{ $('Get row(s) in sheet').item.json.Title }}",
+        "regionCode": "IN",
+        "categoryId": "27",
+        "options": {
+          "description": "={{ $('Get row(s) in sheet').item.json.Description }}",
+          "license": "youtube",
+          "notifySubscribers": true,
+          "privacyStatus": "public",
+          "publicStatsViewable": false,
+          "tags": "={{ $('Get row(s) in sheet').item.json.Tags }}"
+        }
+      },
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        1216,
+        32
+      ],
+      "id": "c2693999-b398-48e2-b7be-bd09d4aba791",
+      "name": "Upload a video",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "IKF0Jpplu4fdn10n",
+          "name": "YouTube account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "={{ $json.VideoFileName }}",
+        "limit": 1,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1F8QYL_fTSyBzvkwIm9GFXo7DIcGlbrGB",
+            "mode": "list",
+            "cachedResultName": "YouTube automation ",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1F8QYL_fTSyBzvkwIm9GFXo7DIcGlbrGB"
+          },
+          "whatToSearch": "files"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        640,
+        0
+      ],
+      "id": "ee100617-8720-43fa-92b5-7518b926072a",
+      "name": "Search files and folders",
+      "alwaysOutputData": true,
+      "executeOnce": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "4nsJPXXkh7iK9UO3",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 17
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -16,
+        224
+      ],
+      "id": "cc9e89b5-9154-4743-8d4a-cd666256034f",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "content": "SECRET: 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\n\nCLIENT ID : 316170861805-tsl6s534sl016q1l6680j9hrdafglei6.apps.googleusercontent.com\n\n",
+        "width": 592
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -592,
+        -960
+      ],
+      "typeVersion": 1,
+      "id": "40b6e48d-0c78-4dc6-b0d3-40a422c1d1a4",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Upload a video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload a video": {
+      "main": [
+        [
+          {
+            "node": "clear row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6851afa4-59f6-4aaf-8e44-aaad01984ac7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d7d2ac5ea2a0d20c0bac96b73861eaf23116ee996742079857a64699f3cb3140"
+  },
+  "id": "25n8LyvvZXS3etkR",
+  "tags": []
+}
